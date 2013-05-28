@@ -8,6 +8,8 @@
 
 #import <Cocoa/Cocoa.h>
 
+#import "ODManager.h"
+
 @interface AppDelegate : NSObject <NSApplicationDelegate>
 
 @property (assign) IBOutlet NSWindow *window;
