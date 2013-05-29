@@ -1,0 +1,6 @@
+* Set default working folder of Downloads to NSPathControl
+* Save and load app configurations (working folder, window size)
+* Make to work!
+** Renamer
+** Mover
+** Cleaner
