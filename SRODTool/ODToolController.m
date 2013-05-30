@@ -8,6 +8,9 @@
 
 #import "ODToolController.h"
 
+#import "AppDelegate.h"
+#import "AppConfig.h"
+
 @implementation ODToolController
 
 @synthesize manager = _manager;
@@ -27,10 +30,16 @@
     return self;
 }
 
-//- (void)awakeFromNib
-//{
-//    NSLog(@"awakeFromNib");
-//}
+- (void)updateWorkingPath:(NSString *)path
+{
+    [self.pathControl setURL:[NSURL fileURLWithPath:path]];
+}
+
+- (void)awakeFromNib
+{
+    NSLog(@"awakeFromNib");
+    [self updateWorkingPath:[self.manager workingPath]];
+}
 
 - (NSInteger)indexOfCoupledSubtitleForMovie:(ODFile *)movie
 {
@@ -93,6 +102,39 @@
 - (IBAction)resetAllCouples:(id)sender
 {
     [self reset];
+}
+
+- (IBAction)pressedChangeFolder:(id)sender
+{
+    NSOpenPanel *panel = [NSOpenPanel openPanel];
+    [panel setAllowsMultipleSelection:NO];
+    [panel setCanChooseDirectories:YES];
+    [panel setCanChooseFiles:NO];
+    [panel setResolvesAliases:YES];
+    
+    NSString *panelTitle = @"Choose Working Folder";
+    [panel setTitle:panelTitle];
+    
+    NSString *promptString = @"Choose";
+    [panel setPrompt:promptString];
+    
+    AppDelegate *ad = [[NSApplication sharedApplication] delegate];
+    
+    [panel beginSheetModalForWindow:[ad window] completionHandler:^(NSInteger result) {
+        [panel orderOut:ad];
+        
+        if (result != NSOKButton) {
+            // Canceled
+            return;
+        }
+        
+        NSURL *url = [[panel URLs] objectAtIndex:0];
+        NSString *path = [url path];
+        [self updateWorkingPath:path];
+        [[AppConfig sharedConfig] setWorkingPath:path];
+        [self.manager refresh];
+        [self updateTables];
+    }];
 }
 
 - (void)resetCoupleOfMovie:(ODFile *)movie

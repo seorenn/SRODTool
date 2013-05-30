@@ -25,9 +25,10 @@
     NSRegularExpression *regexSubtitle;
 }
 
-@property (readonly) NSArray *movieFiles;
-@property (readonly) NSArray *subtitleFiles;
+@property (strong) NSMutableArray *movieFiles;
+@property (strong) NSMutableArray *subtitleFiles;
 
 - (void)refresh;
+- (NSString *)workingPath;
 
 @end

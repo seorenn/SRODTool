@@ -8,6 +8,8 @@
 
 #import "ODManager.h"
 
+#import "AppConfig.h"
+
 @implementation ODFile
 @synthesize name = _name;
 @synthesize file = _file;
@@ -43,6 +45,9 @@
         NSError *error = nil;
         regexMovie = [NSRegularExpression regularExpressionWithPattern:@".*\\.(mp4|mov|m4v|mkv|avi|mpg|mpeg|mpe|flv|wmv|asf|asx|rm|rmv|rmvb|divx|vob|mp4v|3gp|skm|k3g|ogm)$" options:NSRegularExpressionCaseInsensitive error:&error];
         regexSubtitle = [NSRegularExpression regularExpressionWithPattern:@".*\\.(smi|sami|srt|ssa|ass)$" options:NSRegularExpressionCaseInsensitive error:&error];
+        
+        self.movieFiles = [[NSMutableArray alloc] init];
+        self.subtitleFiles = [[NSMutableArray alloc] init];
     }
     return self;
 }
@@ -63,7 +68,8 @@
 
 - (void)refresh
 {
-    NSArray *files = [[SRFileManager sharedManager] walkPath:[self targetDir] withDepthLimit:[self targetDepth]];
+    NSArray *files = [[SRFileManager sharedManager] walkPath:[self workingPath]
+                                              withDepthLimit:[self targetDepth]];
     
     NSMutableArray *tmpMovies = [[NSMutableArray alloc] init];
     NSMutableArray *tmpSubtitles = [[NSMutableArray alloc] init];
@@ -76,15 +82,21 @@
         }
     }
     
-    _movieFiles = [NSArray arrayWithArray:tmpMovies];
-    _subtitleFiles = [NSArray arrayWithArray:tmpSubtitles];
+    [self.movieFiles removeAllObjects];
+    [self.movieFiles addObjectsFromArray:tmpMovies];
+    
+    [self.subtitleFiles removeAllObjects];
+    [self.subtitleFiles addObjectsFromArray:tmpSubtitles];
 }
 
-- (NSString *)targetDir
+- (NSString *)workingPath
 {
-    // TODO: Ready for New Version.
-    // User can switch target directory in new version.
-    return [[SRFileManager sharedManager] pathForDownload];
+    NSString *path = [[AppConfig sharedConfig] workingPath];
+    if (!path) {
+        path = [[SRFileManager sharedManager] pathForDownload];
+    }
+    
+    return path;
 }
 
 - (int)targetDepth

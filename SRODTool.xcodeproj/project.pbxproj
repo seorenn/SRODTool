@@ -18,6 +18,7 @@
 		8A00029817532EC600BFF026 /* SRFileManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A00029617532EC600BFF026 /* SRFileManager.m */; };
 		8A00029B175331BF00BFF026 /* ODManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A00029A175331BF00BFF026 /* ODManager.m */; };
 		8A4BB2B617548605003A52C4 /* ODToolController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A4BB2B517548605003A52C4 /* ODToolController.m */; };
+		8AC62845175724F7005F55DD /* AppConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 8AC62844175724F7005F55DD /* AppConfig.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -44,6 +45,8 @@
 		8A00029A175331BF00BFF026 /* ODManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ODManager.m; sourceTree = "<group>"; };
 		8A4BB2B417548604003A52C4 /* ODToolController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ODToolController.h; sourceTree = "<group>"; };
 		8A4BB2B517548605003A52C4 /* ODToolController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ODToolController.m; sourceTree = "<group>"; };
+		8AC62843175724F7005F55DD /* AppConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppConfig.h; sourceTree = "<group>"; };
+		8AC62844175724F7005F55DD /* AppConfig.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppConfig.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -108,6 +111,8 @@
 				8A00029A175331BF00BFF026 /* ODManager.m */,
 				8A4BB2B417548604003A52C4 /* ODToolController.h */,
 				8A4BB2B517548605003A52C4 /* ODToolController.m */,
+				8AC62843175724F7005F55DD /* AppConfig.h */,
+				8AC62844175724F7005F55DD /* AppConfig.m */,
 			);
 			path = SRODTool;
 			sourceTree = "<group>";
@@ -206,6 +211,7 @@
 				8A00029817532EC600BFF026 /* SRFileManager.m in Sources */,
 				8A00029B175331BF00BFF026 /* ODManager.m in Sources */,
 				8A4BB2B617548605003A52C4 /* ODToolController.m in Sources */,
+				8AC62845175724F7005F55DD /* AppConfig.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
