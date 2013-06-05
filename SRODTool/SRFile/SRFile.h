@@ -26,6 +26,7 @@
 - (void)remove;
 - (void)renameTo:(NSString *)name;
 - (void)moveTo:(NSString *)path;
+- (void)restore;
 - (BOOL)isDirectory;
 - (BOOL)isFile;
 - (BOOL)isHidden;

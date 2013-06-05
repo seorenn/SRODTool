@@ -75,17 +75,43 @@
 
     NSString *path = [[self containerPath] stringByAppendingPathComponent:name];
     [self moveTo:path];
+    
+    self.path = path;
+    [self fetchNames];
 }
 
 - (void)moveTo:(NSString *)path
 {
     if (!self.path || !self.originalPath) return;
     
+    BOOL isDirectory = NO;
+    
     NSError *error = nil;
     [_sharedFM moveItemAtPath:self.path toPath:path error:&error];
-
+    
     if (error) {
         NSLog(@"[SRFile moveTo] Error: %@", error);
+        return;
+    }
+
+    if ([_sharedFM fileExistsAtPath:path isDirectory:&isDirectory])
+    {
+        if (isDirectory == NO) {
+            self.path = path;
+        }
+        else {
+            self.path = [path stringByAppendingPathComponent:self.name];
+        }
+        [self fetchNames];
+    }
+}
+
+// Restore file name and path
+- (void)restore
+{
+    if ([self.path isEqualToString:self.originalPath] == NO) {
+        NSLog(@"[RESTORE] %@ -> %@", self.path, self.originalPath);
+        [self moveTo:self.originalPath];
     }
 }
 

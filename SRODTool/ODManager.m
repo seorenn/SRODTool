@@ -10,23 +10,23 @@
 
 #import "AppConfig.h"
 
-@implementation ODFile
+@implementation ODItem
 @synthesize name = _name;
 @synthesize file = _file;
-@synthesize coupleFile;
+@synthesize tag;
 - (id)initWithFile:(SRFile *)f
 {
     self = [super init];
     if (self) {
         _name = [NSString stringWithString:[f name]];
         _file = f;
-        self.coupleFile = nil;
+        self.tag = -1;
     }
     return self;
 }
 - (BOOL)coupled
 {
-    if (self.coupleFile != nil) return YES;
+    if (self.tag >= 0) return YES;
     return NO;
 }
 @end
@@ -35,8 +35,19 @@
 
 @implementation ODManager
 
-@synthesize movieFiles = _movieFiles;
-@synthesize subtitleFiles = _subtitleFiles;
+@synthesize movieItems = _movieItems;
+@synthesize subtitleItems = _subtitleItems;
+@synthesize modified;
+
++ (ODManager *)sharedManager
+{
+    static ODManager *sharedInstance = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        sharedInstance = [[ODManager alloc] init];
+    });
+    return sharedInstance;
+}
 
 - (id)init
 {
@@ -46,8 +57,8 @@
         regexMovie = [NSRegularExpression regularExpressionWithPattern:@".*\\.(mp4|mov|m4v|mkv|avi|mpg|mpeg|mpe|flv|wmv|asf|asx|rm|rmv|rmvb|divx|vob|mp4v|3gp|skm|k3g|ogm)$" options:NSRegularExpressionCaseInsensitive error:&error];
         regexSubtitle = [NSRegularExpression regularExpressionWithPattern:@".*\\.(smi|sami|srt|ssa|ass)$" options:NSRegularExpressionCaseInsensitive error:&error];
         
-        self.movieFiles = [[NSMutableArray alloc] init];
-        self.subtitleFiles = [[NSMutableArray alloc] init];
+        self.movieItems = [[NSMutableArray alloc] init];
+        self.subtitleItems = [[NSMutableArray alloc] init];
     }
     return self;
 }
@@ -68,6 +79,14 @@
 
 - (void)refresh
 {
+    if (self.modified &&
+        [self.movieItems count] > 0 &&
+        [self.subtitleItems count] > 0) {
+        [self restoreAllSubtitlePaths];
+    }
+    
+    self.modified = NO;
+    
     NSArray *files = [[SRFileManager sharedManager] walkPath:[self workingPath]
                                               withDepthLimit:[self targetDepth]];
     
@@ -76,17 +95,17 @@
     
     for (SRFile *f in files) {
         if ([self isMovieFile:f]) {
-            [tmpMovies addObject:[[ODFile alloc] initWithFile:f]];
+            [tmpMovies addObject:[[ODItem alloc] initWithFile:f]];
         } else if ([self isSubtitleFile:f]) {
-            [tmpSubtitles addObject:[[ODFile alloc] initWithFile:f]];
+            [tmpSubtitles addObject:[[ODItem alloc] initWithFile:f]];
         }
     }
     
-    [self.movieFiles removeAllObjects];
-    [self.movieFiles addObjectsFromArray:tmpMovies];
+    [self.movieItems removeAllObjects];
+    [self.movieItems addObjectsFromArray:tmpMovies];
     
-    [self.subtitleFiles removeAllObjects];
-    [self.subtitleFiles addObjectsFromArray:tmpSubtitles];
+    [self.subtitleItems removeAllObjects];
+    [self.subtitleItems addObjectsFromArray:tmpSubtitles];
 }
 
 - (NSString *)workingPath
@@ -104,6 +123,73 @@
     // TODO: Ready for New Version.
     // User can switch target directory walking depth.
     return 1;
+}
+
+- (NSString *)pathOfNewSubtitle:(ODItem *)subtitleFile forMovieFile:(ODItem *)movieFile
+{
+    NSString *targetPath = movieFile.file.containerPath;
+    NSString *movieName = movieFile.file.name;
+    NSString *movieWithoutExt = [movieName stringByDeletingPathExtension];
+    NSString *subtitleExtName = [subtitleFile.file.name pathExtension];
+    
+    NSString *newPathWithoutExt = [targetPath stringByAppendingPathComponent:movieWithoutExt];
+    NSString *newPath = [newPathWithoutExt stringByAppendingPathExtension:subtitleExtName];
+    
+    return newPath;
+}
+
+- (void)coupleSubtitleIndex:(NSInteger)subtitleIndex withMovieIndex:(NSInteger)movieIndex
+{
+    ODItem *movie = [self.movieItems objectAtIndex:movieIndex];
+    ODItem *subtitle = [self.subtitleItems objectAtIndex:subtitleIndex];
+    
+    [self cancelCoupleOfMovieFile:movie];
+//    [self cancelCoupleOfSubtitleFile:subtitle];
+    
+    NSString *newSubtitlePath = [self pathOfNewSubtitle:subtitle forMovieFile:movie];
+    
+    //NSLog(@"New Subtitle Path = %@", newSubtitlePath);
+    
+    [subtitle.file moveTo:newSubtitlePath];
+    
+    movie.tag = subtitleIndex;
+    subtitle.tag = movieIndex;
+    
+    self.modified = YES;
+}
+
+- (void)cancelCoupleOfMovieFile:(ODItem *)movieItem
+{
+    if (movieItem.tag < 0) return;
+    
+    ODItem *coupledSubtitleItem = [self.subtitleItems objectAtIndex:movieItem.tag];
+    [coupledSubtitleItem.file restore];
+    coupledSubtitleItem.tag = -1;
+    movieItem.tag = -1;
+}
+
+//- (void)cancelCoupleOfSubtitleFile:(ODItem *)subtitleItem
+//{
+//    if (!subtitleItem.couple) return;
+//    
+//    ODItem *coupleItem = subtitleItem.couple;
+//    subtitleItem.couple = nil;
+//    
+//    for (ODItem *o in self.movieFiles) {
+//        if (o == coupleItem) {
+//            o.couple = nil;
+//            break;
+//        }
+//    }
+//    
+//    [subtitleItem.file restore];
+//}
+
+- (void)restoreAllSubtitlePaths
+{
+    for (ODItem *f in self.subtitleItems) {
+        [f.file restore];
+    }
 }
 
 @end

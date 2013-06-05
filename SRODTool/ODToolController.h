@@ -21,13 +21,13 @@
 @property (nonatomic, strong) NSArray *movies;
 @property (nonatomic, strong) NSArray *subtitles;
 
-@property (weak) ODFile *selectingMovieFile;
+@property (weak) ODItem *selectingMovieFile;
 @property (assign) NSInteger selectingMovieIndex;
-@property (weak) ODFile *selectingSubtitleFile;
+@property (weak) ODItem *selectingSubtitleFile;
 @property (assign) NSInteger selectingSubtitleIndex;
 
-- (void)movie:(ODFile *)movie CoupleWithSubtitle:(ODFile *)subtitle;
-- (void)updateSubtitleSelectionForMovie:(ODFile *)movie;
+- (void)movie:(ODItem *)movie CoupleWithSubtitle:(ODItem *)subtitle;
+- (void)updateSubtitleSelectionForMovie:(ODItem *)movie;
 - (IBAction)resetAllCouples:(id)sender;
 - (IBAction)pressedChangeFolder:(id)sender;
 

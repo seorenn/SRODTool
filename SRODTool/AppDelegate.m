@@ -20,4 +20,10 @@
     // Insert code here to initialize your application
 }
 
+- (void)applicationWillTerminate:(NSNotification *)notification
+{
+    NSLog(@"application will terminate...");
+    [[ODManager sharedManager] restoreAllSubtitlePaths];
+}
+
 @end
