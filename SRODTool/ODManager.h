@@ -23,6 +23,9 @@
 @interface ODManager : NSObject {
     NSRegularExpression *regexMovie;
     NSRegularExpression *regexSubtitle;
+    
+    NSRegularExpression *regexVender;
+    NSRegularExpression *regexInfo;
 }
 
 @property (strong) NSMutableArray *movieItems;
@@ -37,5 +40,6 @@
 - (void)cancelCoupleOfMovieFile:(ODItem *)movieItem;
 //- (void)cancelCoupleOfSubtitleFile:(ODItem *)subtitleItem;
 - (void)restoreAllSubtitlePaths;
+- (NSString *)normalizedName:(NSString *)name;
 
 @end

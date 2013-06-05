@@ -37,6 +37,10 @@
 
 - (void)awakeFromNib
 {
+    // TESTING
+    
+    NSLog(@"[TEST] %@", [self.manager normalizedName:@"[This is test] Test String 00 (test test value).avi"]);
+    
     //NSLog(@"awakeFromNib");
     [self updateWorkingPath:[self.manager workingPath]];
     

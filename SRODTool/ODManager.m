@@ -10,6 +10,8 @@
 
 #import "AppConfig.h"
 
+#pragma mark - ODItem
+
 @implementation ODItem
 @synthesize name = _name;
 @synthesize file = _file;
@@ -31,7 +33,46 @@
 }
 @end
 
+#pragma mark - NSString with Strip feature
 
+@implementation NSString (SSToolkitAdditions)
+
+#pragma mark Trimming Methods
+
+- (NSString *)stringByTrimmingLeadingCharactersInSet:(NSCharacterSet *)characterSet {
+    NSRange rangeOfFirstWantedCharacter = [self rangeOfCharacterFromSet:[characterSet invertedSet]];
+    if (rangeOfFirstWantedCharacter.location == NSNotFound) {
+        return @"";
+    }
+    return [self substringFromIndex:rangeOfFirstWantedCharacter.location];
+}
+
+- (NSString *)stringByTrimmingLeadingWhitespaceAndNewlineCharacters {
+    return [self stringByTrimmingLeadingCharactersInSet:
+            [NSCharacterSet whitespaceAndNewlineCharacterSet]];
+}
+
+- (NSString *)stringByTrimmingTrailingCharactersInSet:(NSCharacterSet *)characterSet {
+    NSRange rangeOfLastWantedCharacter = [self rangeOfCharacterFromSet:[characterSet invertedSet]
+                                                               options:NSBackwardsSearch];
+    if (rangeOfLastWantedCharacter.location == NSNotFound) {
+        return @"";
+    }
+    return [self substringToIndex:rangeOfLastWantedCharacter.location+1]; // non-inclusive
+}
+
+- (NSString *)stringByTrimmingTrailingWhitespaceAndNewlineCharacters {
+    return [self stringByTrimmingTrailingCharactersInSet:
+            [NSCharacterSet whitespaceAndNewlineCharacterSet]];
+}
+
+- (NSString *)strip {
+    return [[self stringByTrimmingLeadingWhitespaceAndNewlineCharacters] stringByTrimmingTrailingWhitespaceAndNewlineCharacters];
+}
+
+@end
+
+#pragma mark - ODManager
 
 @implementation ODManager
 
@@ -56,6 +97,9 @@
         NSError *error = nil;
         regexMovie = [NSRegularExpression regularExpressionWithPattern:@".*\\.(mp4|mov|m4v|mkv|avi|mpg|mpeg|mpe|flv|wmv|asf|asx|rm|rmv|rmvb|divx|vob|mp4v|3gp|skm|k3g|ogm)$" options:NSRegularExpressionCaseInsensitive error:&error];
         regexSubtitle = [NSRegularExpression regularExpressionWithPattern:@".*\\.(smi|sami|srt|ssa|ass)$" options:NSRegularExpressionCaseInsensitive error:&error];
+        
+        regexVender = [NSRegularExpression regularExpressionWithPattern:@"^(\\[.+\\]).+$" options:NSRegularExpressionCaseInsensitive error:&error];
+        regexInfo = [NSRegularExpression regularExpressionWithPattern:@".+\\(.+\\).+$" options:NSRegularExpressionCaseInsensitive error:&error];
         
         self.movieItems = [[NSMutableArray alloc] init];
         self.subtitleItems = [[NSMutableArray alloc] init];
@@ -190,6 +234,52 @@
     for (ODItem *f in self.subtitleItems) {
         [f.file restore];
     }
+}
+
+- (NSRange)rangeMatchedPattern:(NSRegularExpression *)regex fromString:(NSString *)string
+{
+    //return [regex rangeOfFirstMatchInString:string options:NSMatchingReportProgress range:NSMakeRange(0, [string length])];
+    NSArray *rs = [regex matchesInString:string options:NSMatchingReportCompletion range:NSMakeRange(0, [string length])];
+    
+    if (!rs || [rs count] < 2) {
+        return NSMakeRange(NSNotFound, 0);
+    }
+    
+    NSLog(@"[MATCH] ORIGINAL: %@", string);
+    for (NSTextCheckingResult *r in rs) {
+        NSLog(@"[MATCH] - %ld, %ld", r.range.location, r.range.length);
+    }
+    
+    NSTextCheckingResult *res = [rs objectAtIndex:1];
+    return res.range;
+}
+
+- (NSString *)normalizedName:(NSString *)name
+{
+    NSRange r;
+    NSString *strVendorRemoved = nil;
+    NSString *strInfoRemoved = nil;
+    NSString *clearName = nil;
+    
+    r = [self rangeMatchedPattern:regexVender fromString:name];
+    if (r.location != NSNotFound && r.length > 0) {
+        strVendorRemoved = [name stringByReplacingCharactersInRange:r withString:@""];
+    } else {
+        strVendorRemoved = [NSString stringWithString:name];
+    }
+    
+    r = [self rangeMatchedPattern:regexInfo fromString:strVendorRemoved];
+    if (r.location != NSNotFound && r.length > 0) {
+        strInfoRemoved = [strVendorRemoved stringByReplacingCharactersInRange:r withString:@""];
+    } else {
+        strInfoRemoved = [NSString stringWithString:strVendorRemoved];
+    }
+    
+    // TODO: strInfoRemoved -> remove continuous whitespaces -> clearName
+    // This is temporary code
+    clearName = [NSString stringWithString:strInfoRemoved];
+    
+    return [clearName strip];
 }
 
 @end
