@@ -241,17 +241,16 @@
     //return [regex rangeOfFirstMatchInString:string options:NSMatchingReportProgress range:NSMakeRange(0, [string length])];
     NSArray *rs = [regex matchesInString:string options:NSMatchingReportCompletion range:NSMakeRange(0, [string length])];
     
-    if (!rs || [rs count] < 2) {
+    if (!rs || [rs count] < 1) {
         return NSMakeRange(NSNotFound, 0);
     }
     
-    NSLog(@"[MATCH] ORIGINAL: %@", string);
-    for (NSTextCheckingResult *r in rs) {
-        NSLog(@"[MATCH] - %ld, %ld", r.range.location, r.range.length);
+    NSTextCheckingResult *matchResult = [rs objectAtIndex:0];
+    if (matchResult.numberOfRanges < 2) {
+        return NSMakeRange(NSNotFound, 0);
     }
     
-    NSTextCheckingResult *res = [rs objectAtIndex:1];
-    return res.range;
+    return [matchResult rangeAtIndex:1];
 }
 
 - (NSString *)normalizedName:(NSString *)name
