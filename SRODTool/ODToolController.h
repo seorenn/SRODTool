@@ -30,5 +30,6 @@
 - (void)updateSubtitleSelectionForMovie:(ODItem *)movie;
 - (IBAction)resetAllCouples:(id)sender;
 - (IBAction)pressedChangeFolder:(id)sender;
+- (IBAction)pressedPerform:(id)sender;
 
 @end

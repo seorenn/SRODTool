@@ -41,5 +41,7 @@
 //- (void)cancelCoupleOfSubtitleFile:(ODItem *)subtitleItem;
 - (void)restoreAllSubtitlePaths;
 - (NSString *)normalizedName:(NSString *)name;
+- (NSArray *)dirs;
+- (NSInteger)filesInDirectory:(NSString *)path;
 
 @end

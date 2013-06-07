@@ -24,11 +24,13 @@
 - (BOOL)hasExtensionName:(NSString *)extName;
 - (BOOL)hasExtensionFromNames:(NSArray *)extNames;
 - (void)remove;
+- (void)trash;
 - (void)renameTo:(NSString *)name;
 - (void)moveTo:(NSString *)path;
 - (void)restore;
 - (BOOL)isDirectory;
 - (BOOL)isFile;
 - (BOOL)isHidden;
+- (void)openWithAssociatedApp;
 
 @end

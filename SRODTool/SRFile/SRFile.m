@@ -69,6 +69,17 @@
     }
 }
 
+- (void)trash
+{
+    if (!self.path || !self.originalPath) return;
+    
+    [[NSWorkspace sharedWorkspace] performFileOperation:NSWorkspaceRecycleOperation
+                                                 source:[self.path stringByDeletingLastPathComponent]
+                                            destination:@""
+                                                  files:[NSArray arrayWithObject:[self.path lastPathComponent]]
+                                                    tag:nil];
+}
+
 - (void)renameTo:(NSString *)name
 {
     if (!self.path || !self.originalPath) return;
@@ -130,6 +141,11 @@
 - (BOOL)isHidden
 {
     return [[self name] hasPrefix:@"."];
+}
+
+- (void)openWithAssociatedApp
+{
+    [[NSWorkspace sharedWorkspace] openFile:self.path];
 }
 
 @end

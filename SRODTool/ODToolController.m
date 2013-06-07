@@ -22,12 +22,16 @@
     self = [super init];
     if (self) {
         self.manager = [ODManager sharedManager];
-        [self.manager refresh];
-        
-        self.movies = self.manager.movieItems;
-        self.subtitles = self.manager.subtitleItems;
+        [self refresh];
     }
     return self;
+}
+
+- (void)refresh
+{
+    [self.manager refresh];
+    self.movies = self.manager.movieItems;
+    self.subtitles = self.manager.subtitleItems;
 }
 
 - (void)updateWorkingPath:(NSString *)path
@@ -35,11 +39,15 @@
     [self.pathControl setURL:[NSURL fileURLWithPath:path]];
 }
 
+//#define NORMTEST(s) { \
+//    NSLog(@"[NORM] [%@] -> [%@]", (s), [self.manager normalizedName:(s)]); \
+//}
 - (void)awakeFromNib
 {
     // TESTING
-    
-    NSLog(@"[TEST] %@", [self.manager normalizedName:@"[This is test] Test String 00 (test test value).avi"]);
+//    NORMTEST(@"[This is test] Test String 00 (test test value).avi");
+//    NORMTEST(@"[This is test] Test  String    00     (test test value)     .avi");
+//    NORMTEST(@"[한글테스트] 한글 이름이 들어간 Test  String  은  00  되는가   (test test value)     .avi");
     
     //NSLog(@"awakeFromNib");
     [self updateWorkingPath:[self.manager workingPath]];
@@ -54,7 +62,9 @@
     
     NSInteger row = [self.moviesTableView clickedRow];
     ODItem *file = [self.manager.movieItems objectAtIndex:row];
-    NSLog(@"doubledClicked with row %ld -> %@", row, file.name);
+//    NSLog(@"doubledClicked with row %ld -> %@", row, file.name);
+    
+    [file.file openWithAssociatedApp];
 }
 
 - (NSInteger)indexOfCoupledSubtitleForMovie:(ODItem *)movie
@@ -151,6 +161,46 @@
         [self.manager refresh];
         [self updateTables];
     }];
+}
+
+- (void)normalizeNamesOfItems:(NSArray *)items
+{
+    for (ODItem *item in items) {
+        NSString *nn = [self.manager normalizedName:[item.file name]];
+        if ([nn isEqualToString:[item.file name]]) continue;
+        
+        [item.file renameTo:nn];
+    }
+}
+
+- (void)trashOrphanedSubtitles
+{
+    for (ODItem *item in self.subtitles) {
+        if (item.tag < 0) {
+            [item.file trash];
+        }
+    }
+}
+
+- (void)trashBlankDirectories
+{
+    NSArray *dirs = [self.manager dirs];
+    for (SRFile *dir in dirs) {
+        if ([self.manager filesInDirectory:dir.path] == 0) {
+            [dir trash];
+        }
+    }
+}
+
+- (IBAction)pressedPerform:(id)sender
+{
+    [self normalizeNamesOfItems:self.movies];
+    [self normalizeNamesOfItems:self.subtitles];
+    [self trashOrphanedSubtitles];
+    [self trashBlankDirectories];
+    self.manager.modified = NO;
+    [self refresh];
+    [self updateTables];
 }
 
 //- (void)resetCoupleOfMovie:(ODItem *)movie

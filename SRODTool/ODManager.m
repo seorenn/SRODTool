@@ -99,7 +99,7 @@
         regexSubtitle = [NSRegularExpression regularExpressionWithPattern:@".*\\.(smi|sami|srt|ssa|ass)$" options:NSRegularExpressionCaseInsensitive error:&error];
         
         regexVender = [NSRegularExpression regularExpressionWithPattern:@"^(\\[.+\\]).+$" options:NSRegularExpressionCaseInsensitive error:&error];
-        regexInfo = [NSRegularExpression regularExpressionWithPattern:@".+\\(.+\\).+$" options:NSRegularExpressionCaseInsensitive error:&error];
+        regexInfo = [NSRegularExpression regularExpressionWithPattern:@"^.+(\\(.+\\)).*$" options:NSRegularExpressionCaseInsensitive error:&error];
         
         self.movieItems = [[NSMutableArray alloc] init];
         self.subtitleItems = [[NSMutableArray alloc] init];
@@ -139,7 +139,9 @@
     
     for (SRFile *f in files) {
         if ([self isMovieFile:f]) {
-            [tmpMovies addObject:[[ODItem alloc] initWithFile:f]];
+            if ([[SRFileManager sharedManager] depthOfPath:f.path fromRootPath:[self workingPath]] < 1) {
+                [tmpMovies addObject:[[ODItem alloc] initWithFile:f]];
+            }
         } else if ([self isSubtitleFile:f]) {
             [tmpSubtitles addObject:[[ODItem alloc] initWithFile:f]];
         }
@@ -150,6 +152,26 @@
     
     [self.subtitleItems removeAllObjects];
     [self.subtitleItems addObjectsFromArray:tmpSubtitles];
+}
+
+- (NSArray *)dirs
+{
+    NSArray *files = [[SRFileManager sharedManager] walkPath:[self workingPath] withDepthLimit:0];
+    NSMutableArray *result = [[NSMutableArray alloc] init];
+    
+    for (SRFile *file in files) {
+        if ([file isDirectory]) {
+            [result addObject:file];
+        }
+    }
+    
+    return result;
+}
+
+- (NSInteger)filesInDirectory:(NSString *)path
+{
+    NSArray *files = [[SRFileManager sharedManager] walkPath:path withDepthLimit:0];
+    return [files count];
 }
 
 - (NSString *)workingPath
@@ -253,6 +275,18 @@
     return [matchResult rangeAtIndex:1];
 }
 
+- (NSString *)collapseWhitespaces:(NSString *)string
+{
+    NSCharacterSet *whitespaces = [NSCharacterSet whitespaceCharacterSet];
+    NSPredicate *noEmptyStrings = [NSPredicate predicateWithFormat:@"SELF != ''"];
+    
+    NSArray *parts = [string componentsSeparatedByCharactersInSet:whitespaces];
+    NSArray *filteredArray = [parts filteredArrayUsingPredicate:noEmptyStrings];
+    NSString *result = [filteredArray componentsJoinedByString:@" "];
+    
+    return result;
+}
+
 - (NSString *)normalizedName:(NSString *)name
 {
     NSRange r;
@@ -260,11 +294,14 @@
     NSString *strInfoRemoved = nil;
     NSString *clearName = nil;
     
-    r = [self rangeMatchedPattern:regexVender fromString:name];
+    NSString *extName = [name pathExtension];
+    NSString *bodyName = [name stringByDeletingPathExtension];
+    
+    r = [self rangeMatchedPattern:regexVender fromString:bodyName];
     if (r.location != NSNotFound && r.length > 0) {
-        strVendorRemoved = [name stringByReplacingCharactersInRange:r withString:@""];
+        strVendorRemoved = [bodyName stringByReplacingCharactersInRange:r withString:@""];
     } else {
-        strVendorRemoved = [NSString stringWithString:name];
+        strVendorRemoved = [NSString stringWithString:bodyName];
     }
     
     r = [self rangeMatchedPattern:regexInfo fromString:strVendorRemoved];
@@ -276,9 +313,13 @@
     
     // TODO: strInfoRemoved -> remove continuous whitespaces -> clearName
     // This is temporary code
-    clearName = [NSString stringWithString:strInfoRemoved];
+    clearName = [[NSString stringWithString:strInfoRemoved] strip];
     
-    return [clearName strip];
+    NSString *collapsed = [self collapseWhitespaces:clearName];
+    
+    NSString *completedName = [collapsed stringByAppendingPathExtension:extName];
+    
+    return completedName;
 }
 
 @end
