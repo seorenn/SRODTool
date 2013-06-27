@@ -38,6 +38,15 @@
     return [paths objectAtIndex:0];
 }
 
+- (NSString *)pathForMovie
+{
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSMoviesDirectory,
+                                                         NSUserDomainMask,
+                                                         YES);
+    if (!paths || [paths count] <= 0) return nil;
+    return [paths objectAtIndex:0];
+}
+
 - (NSURL *)urlForDownload
 {
     NSArray *urls = [_sharedFM URLsForDirectory:NSDownloadsDirectory

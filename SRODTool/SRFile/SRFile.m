@@ -83,6 +83,7 @@
 - (void)renameTo:(NSString *)name
 {
     if (!self.path || !self.originalPath) return;
+    if ([self.name isEqualToString:name]) return;
 
     NSString *path = [[self containerPath] stringByAppendingPathComponent:name];
     [self moveTo:path];
@@ -98,9 +99,11 @@
     BOOL isDirectory = NO;
     
     NSError *error = nil;
-    [_sharedFM moveItemAtPath:self.path toPath:path error:&error];
+    BOOL moved = NO;
     
-    if (error) {
+    moved = [_sharedFM moveItemAtPath:self.path toPath:path error:&error];
+    
+    if (!moved) {
         NSLog(@"[SRFile moveTo] Error: %@", error);
         return;
     }
@@ -121,7 +124,6 @@
 - (void)restore
 {
     if ([self.path isEqualToString:self.originalPath] == NO) {
-        NSLog(@"[RESTORE] %@ -> %@", self.path, self.originalPath);
         [self moveTo:self.originalPath];
     }
 }

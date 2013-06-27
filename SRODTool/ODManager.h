@@ -16,6 +16,7 @@
 @property (readonly) SRFile *file;
 @property NSInteger tag;
 - (id)initWithFile:(SRFile *)f;
+- (id)initWithName:(NSString *)name;
 - (BOOL)coupled;
 @end
 
@@ -36,6 +37,7 @@
 
 - (void)refresh;
 - (NSString *)workingPath;
+- (NSString *)destPath;
 - (void)coupleSubtitleIndex:(NSInteger)subtitleIndex withMovieIndex:(NSInteger)movieIndex;
 - (void)cancelCoupleOfMovieFile:(ODItem *)movieItem;
 //- (void)cancelCoupleOfSubtitleFile:(ODItem *)subtitleItem;

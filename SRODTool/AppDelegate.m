@@ -22,7 +22,6 @@
 
 - (void)applicationWillTerminate:(NSNotification *)notification
 {
-//    NSLog(@"application will terminate...");
     [[ODManager sharedManager] restoreAllSubtitlePaths];
 }
 

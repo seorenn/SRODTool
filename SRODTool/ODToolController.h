@@ -14,6 +14,7 @@
 @property (weak) IBOutlet NSTableView *moviesTableView;
 @property (weak) IBOutlet NSTableView *subtitlesTableView;
 @property (weak) IBOutlet NSPathControl *pathControl;
+@property (weak) IBOutlet NSPathControl *destPathControl;
 
 @property (nonatomic, strong) ODManager *manager;
 
@@ -26,10 +27,11 @@
 @property (weak) ODItem *selectingSubtitleFile;
 @property (assign) NSInteger selectingSubtitleIndex;
 
-- (void)movie:(ODItem *)movie CoupleWithSubtitle:(ODItem *)subtitle;
+- (void)movie:(ODItem *)movie coupleWithSubtitle:(ODItem *)subtitle;
 - (void)updateSubtitleSelectionForMovie:(ODItem *)movie;
 - (IBAction)resetAllCouples:(id)sender;
 - (IBAction)pressedChangeFolder:(id)sender;
 - (IBAction)pressedPerform:(id)sender;
+- (IBAction)pressedDestination:(id)sender;
 
 @end

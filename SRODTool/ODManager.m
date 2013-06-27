@@ -26,6 +26,16 @@
     }
     return self;
 }
+- (id)initWithName:(NSString *)name
+{
+    self = [super init];
+    if (self) {
+        _name = [NSString stringWithString:name];
+        _file = nil;
+        self.tag = -1;
+    }
+    return self;
+}
 - (BOOL)coupled
 {
     if (self.tag >= 0) return YES;
@@ -137,6 +147,9 @@
     NSMutableArray *tmpMovies = [[NSMutableArray alloc] init];
     NSMutableArray *tmpSubtitles = [[NSMutableArray alloc] init];
     
+    // add not-selected item to subtitles
+    [tmpSubtitles addObject:[[ODItem alloc] initWithName:@"(NOT SELECTED)"]];
+    
     for (SRFile *f in files) {
         if ([self isMovieFile:f]) {
             if ([[SRFileManager sharedManager] depthOfPath:f.path fromRootPath:[self workingPath]] < 1) {
@@ -184,6 +197,16 @@
     return path;
 }
 
+- (NSString *)destPath
+{
+    NSString *path = [[AppConfig sharedConfig] destPath];
+    if (!path) {
+        path = [[SRFileManager sharedManager] pathForMovie];
+    }
+    
+    return path;
+}
+
 - (int)targetDepth
 {
     // TODO: Ready for New Version.
@@ -210,11 +233,8 @@
     ODItem *subtitle = [self.subtitleItems objectAtIndex:subtitleIndex];
     
     [self cancelCoupleOfMovieFile:movie];
-//    [self cancelCoupleOfSubtitleFile:subtitle];
     
     NSString *newSubtitlePath = [self pathOfNewSubtitle:subtitle forMovieFile:movie];
-    
-    //NSLog(@"New Subtitle Path = %@", newSubtitlePath);
     
     [subtitle.file moveTo:newSubtitlePath];
     

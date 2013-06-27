@@ -14,6 +14,7 @@
 + (SRFileManager *)sharedManager;
 
 - (NSString *)pathForDownload;
+- (NSString *)pathForMovie;
 - (NSURL *)urlForDownload;
 - (BOOL)isDirectory:(NSString *)path;
 

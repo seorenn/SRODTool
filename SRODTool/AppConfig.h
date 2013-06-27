@@ -12,6 +12,8 @@
 
 + (AppConfig *)sharedConfig;
 - (NSString *)workingPath;
+- (NSString *)destPath;
 - (void)setWorkingPath:(NSString *)path;
+- (void)setDestPath:(NSString *)path;
 
 @end
