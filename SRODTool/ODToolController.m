@@ -114,8 +114,6 @@
         
         // 0 is row for not-selected.
         sidx = 0;
-    } else {
-        sidx++;
     }
     
     [self.subtitlesTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:sidx] byExtendingSelection:NO];
