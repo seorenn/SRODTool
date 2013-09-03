@@ -2,8 +2,8 @@
 //  AppDelegate.h
 //  SRODTool
 //
-//  Created by Heeseung Seo on 13. 5. 27..
-//  Copyright (c) 2013년 seorenn. All rights reserved.
+//  Created by Seorenn
+//  Copyright (c) 2013 Seorenn. All rights reserved.
 //
 
 #import <Cocoa/Cocoa.h>

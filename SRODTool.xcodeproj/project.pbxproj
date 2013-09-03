@@ -13,7 +13,6 @@
 		8A00028317532A4400BFF026 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 8A00028117532A4400BFF026 /* Credits.rtf */; };
 		8A00028617532A4400BFF026 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A00028517532A4400BFF026 /* AppDelegate.m */; };
 		8A00028917532A4400BFF026 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8A00028717532A4400BFF026 /* MainMenu.xib */; };
-		8A00029117532D5500BFF026 /* MovieRow.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A00029017532D5500BFF026 /* MovieRow.m */; };
 		8A00029717532EC600BFF026 /* SRFile.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A00029417532EC600BFF026 /* SRFile.m */; };
 		8A00029817532EC600BFF026 /* SRFileManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A00029617532EC600BFF026 /* SRFileManager.m */; };
 		8A00029B175331BF00BFF026 /* ODManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A00029A175331BF00BFF026 /* ODManager.m */; };
@@ -35,8 +34,6 @@
 		8A00028417532A4400BFF026 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		8A00028517532A4400BFF026 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		8A00028817532A4400BFF026 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
-		8A00028F17532D5500BFF026 /* MovieRow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MovieRow.h; sourceTree = "<group>"; };
-		8A00029017532D5500BFF026 /* MovieRow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MovieRow.m; sourceTree = "<group>"; };
 		8A00029317532EC600BFF026 /* SRFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SRFile.h; sourceTree = "<group>"; };
 		8A00029417532EC600BFF026 /* SRFile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SRFile.m; sourceTree = "<group>"; };
 		8A00029517532EC600BFF026 /* SRFileManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SRFileManager.h; sourceTree = "<group>"; };
@@ -104,8 +101,6 @@
 				8A00028417532A4400BFF026 /* AppDelegate.h */,
 				8A00028517532A4400BFF026 /* AppDelegate.m */,
 				8A00028717532A4400BFF026 /* MainMenu.xib */,
-				8A00028F17532D5500BFF026 /* MovieRow.h */,
-				8A00029017532D5500BFF026 /* MovieRow.m */,
 				8A00027917532A4400BFF026 /* Supporting Files */,
 				8A000299175331BF00BFF026 /* ODManager.h */,
 				8A00029A175331BF00BFF026 /* ODManager.m */,
@@ -206,7 +201,6 @@
 			files = (
 				8A00027F17532A4400BFF026 /* main.m in Sources */,
 				8A00028617532A4400BFF026 /* AppDelegate.m in Sources */,
-				8A00029117532D5500BFF026 /* MovieRow.m in Sources */,
 				8A00029717532EC600BFF026 /* SRFile.m in Sources */,
 				8A00029817532EC600BFF026 /* SRFileManager.m in Sources */,
 				8A00029B175331BF00BFF026 /* ODManager.m in Sources */,

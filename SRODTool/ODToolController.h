@@ -2,8 +2,8 @@
 //  ODToolController.h
 //  SRODTool
 //
-//  Created by Heeseung Seo on 13. 5. 28..
-//  Copyright (c) 2013년 seorenn. All rights reserved.
+//  Created by Seorenn
+//  Copyright (c) 2013 Seorenn. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
@@ -33,5 +33,6 @@
 - (IBAction)pressedChangeFolder:(id)sender;
 - (IBAction)pressedPerform:(id)sender;
 - (IBAction)pressedDestination:(id)sender;
+- (IBAction)pressedRefresh:(id)sender;
 
 @end

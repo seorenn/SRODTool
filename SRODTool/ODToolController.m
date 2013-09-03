@@ -2,8 +2,8 @@
 //  ODToolController.m
 //  SRODTool
 //
-//  Created by Heeseung Seo on 13. 5. 28..
-//  Copyright (c) 2013년 seorenn. All rights reserved.
+//  Created by Seorenn
+//  Copyright (c) 2013 Seorenn. All rights reserved.
 //
 
 #import "ODToolController.h"
@@ -153,7 +153,8 @@
         [self updateWorkingPath:path];
         [[AppConfig sharedConfig] setWorkingPath:path];
         [self reset];
-        [self.manager refresh];
+        //[self.manager refresh];
+        [self refresh];
         [self updateTables];
     }];
 }
@@ -241,23 +242,15 @@
         NSString *path = [url path];
         [self updateDestPath:path];
         [[AppConfig sharedConfig] setDestPath:path];
-//        [self reset];
-//        [self.manager refresh];
-//        [self updateTables];
     }];
 }
 
-//- (void)resetCoupleOfMovie:(ODItem *)movie
-//{
-//    if (movie.tag < 0) return;
-//    
-//    for (ODItem *s in self.subtitles) {
-//        if (s == movie.couple) {
-//            s.couple = nil;
-//        }
-//    }
-//    movie.couple = nil;
-//}
+- (IBAction)pressedRefresh:(id)sender
+{
+    [self reset];
+    [self refresh];
+    [self updateTables];
+}
 
 - (BOOL)alreadyCoupledMovie:(ODItem *)movie withSubtitle:(ODItem *)subtitle
 {

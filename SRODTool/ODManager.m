@@ -2,8 +2,8 @@
 //  ODManager.m
 //  SRODTool
 //
-//  Created by Heeseung Seo on 13. 5. 27..
-//  Copyright (c) 2013년 seorenn. All rights reserved.
+//  Created by Seorenn
+//  Copyright (c) 2013 Seorenn. All rights reserved.
 //
 
 #import "ODManager.h"
@@ -152,6 +152,7 @@
     
     for (SRFile *f in files) {
         if ([self isMovieFile:f]) {
+            // Check movie files depth
             if ([[SRFileManager sharedManager] depthOfPath:f.path fromRootPath:[self workingPath]] < 1) {
                 [tmpMovies addObject:[[ODItem alloc] initWithFile:f]];
             }
@@ -253,23 +254,6 @@
     coupledSubtitleItem.tag = -1;
     movieItem.tag = -1;
 }
-
-//- (void)cancelCoupleOfSubtitleFile:(ODItem *)subtitleItem
-//{
-//    if (!subtitleItem.couple) return;
-//    
-//    ODItem *coupleItem = subtitleItem.couple;
-//    subtitleItem.couple = nil;
-//    
-//    for (ODItem *o in self.movieFiles) {
-//        if (o == coupleItem) {
-//            o.couple = nil;
-//            break;
-//        }
-//    }
-//    
-//    [subtitleItem.file restore];
-//}
 
 - (void)restoreAllSubtitlePaths
 {
