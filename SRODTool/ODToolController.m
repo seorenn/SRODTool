@@ -46,6 +46,9 @@
 
 - (void)awakeFromNib
 {
+    [self.moviesTableView setColumnAutoresizingStyle:NSTableViewFirstColumnOnlyAutoresizingStyle];
+    [self.subtitlesTableView setColumnAutoresizingStyle:NSTableViewFirstColumnOnlyAutoresizingStyle];
+    
     [self updateWorkingPath:[self.manager workingPath]];
     [self updateDestPath:[self.manager destPath]];
     
